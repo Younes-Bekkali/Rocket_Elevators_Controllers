@@ -1,0 +1,363 @@
+"*************************************************************"
+"             - ELEVATORS SYSTEM INITIALISATION  -            "
+"**************************************************************"
+
+
+SEQUENCE ElevatorSystemInitialisation
+
+  SET Battery TO operational
+  FOR EACH column IN columns
+    FOR EACH elevator IN column elevators
+
+        SET floorLevel_display TO ON
+        SET ElevatorFloor_display TO ON
+        SET elevatorStatus TO Idle
+        SET elevatorLevel TO 1
+        SET elevatorDoor TO Close
+        SET MaximumWeightCapacity TO X VALUE
+        SET DelayDoorsOpend TO Y VALUE
+        SET WeightSensor TO ON
+        
+
+    END FOR
+  END FOR
+  
+END SEQUENCE
+
+
+"*************************************************************"
+"                 -  Weight Capacity Check -                   "
+"**************************************************************"
+
+SEQUENCE WeightCapacityCheck USING  MaximumWeightCapacity AND WeightSensor 
+
+  FOR EACH elevator in column
+
+    READ WeightSensor THEN
+        IF WeightSensor IS OVER MaximumWeightCapacity THEN
+          DISPLAY ELEVATOR WEIGHT MAXIMUM CAPACITY REACHED THEN
+          CALL DoorsOpen
+        END IF
+
+  END FOR
+
+END SEQUENCE
+
+"*************************************************************"
+"                 -  DEFAULT IDLE POSITION -                   "
+"**************************************************************"
+SEQUENCE DefaultIdlePosition
+
+  CALL MovingDown WITH ElevatorCurrentLevel AND floorLevel IS SET TO 1 THEN
+  CALL ElevStatusIdle
+
+END SEQUENCE
+
+"*************************************************************"
+"                 -  ELEVATOR STATUS -                        "
+"**************************************************************"
+
+SEQUENCE ElevStatusIdle
+  SET ElevatorStatus TO Idle
+END SEQUENCE
+
+SEQUENCE ElevStatusStopped
+  SET ElevatorStatus TO Stopped
+END SEQUENCE
+
+SEQUENCE ElevStatusMoving
+  SET ElevatorStatus TO Moving
+END SEQUENCE
+
+"*************************************************************"
+"                 -  DOORS CONTROL -                          "
+"**************************************************************"
+SEQUENCE OpenDoors USING ElevatorStatus AND Doors
+
+IF ElevatorStatus IS NOT Moving THEN
+    SET Doors TO OPEN
+        IF Doors IS OPEN THEN
+            SET TimeDelay TO  DelayDoorsOpened
+            Call CloseDoors 
+        ENDIF
+ENDIF
+
+ENd SEQUENCE
+
+SEQUENCE CloseDoors 
+
+    IF Doors IS OPEN THEN
+
+        call WeightCapacityCheck 
+        IF WeightCapacity NOT reached AND Doors NOT Obstruct THEN
+            SET Doors IS ClOSE
+        ELSE call OpenDoors
+        ENDIF
+
+    ENDIF
+
+END SEQUENCE
+"*************************************************************"
+"                 -  CALL BUTTONS CONTROL  -                   "
+"**************************************************************"
+
+SEQUENCE SelectCallButton USING floorLevel AND Direction
+
+  FOR EACH CallButton IN CallButtons
+    IF Direction IS SAME AS CallButton direction 
+       AND floorLevel IS SAME AS CallButton floor Level THEN
+       RETURN CallButton
+    END IF
+  END FOR
+
+END SEQUENCE
+
+
+SEQUENCE ActivateCallButtons USING floorLevel AND Direction
+
+  CALL SelectCallButton WITH floorLevel AND Direction RETURNING CallButton
+  SET button_Display TO Illuminate
+
+END SEQUENCE
+
+
+SEQUENCE De_ActivateCallButtons USING floorLevel AND Direction
+
+  CALL SelectCallButton WITH floorLevel AND Direction RETURNING CallButton
+  SET button_Display TO De-Illuminate
+
+END SEQUENCE
+
+SEQUENCE CallElevator USING floorLevel AND Direction
+
+  CALL ActivateCallButtons WITH floorLevel AND Direction 
+  CALL SelectElevator WITH floorLevel AND Direction RETURNING SelectedElevator
+  CALL AddToRequestFloorList with floorLevel AND selectedElevator
+
+END SEQUENCE
+
+
+"*************************************************************"
+"               -  Floor Request Buttons Control -            "
+"*************************************************************"
+
+"Select the elevator level button from the buttons list"
+
+SEQUENCE SelectRequestFloorButton USING RequestedFloor
+
+   FOR EACH FloorRequestButton IN FloorRequestButtons
+       IF RequestedFloor IS SAME AS FloorRequestButton THEN
+           RETURN FloorRequestButton
+       END IF
+   END FOR
+
+END SEQUENCE
+
+
+
+SEQUENCE RequestFloorButton USING FloorLevel AND FloorRequestButton
+  FOR EACH FloorRequestButton IN FloorRequestButtons
+    IF floorLevel IS SAME AS FloorRequestButton THEN
+      CALL ActivateElevatorFloorButton
+      RETURN FloorRequestButton
+    END IF
+  END FOR
+
+END SEQUENCE
+
+
+SEQUENCE FloorRequest USING ElevatorCurrentLevel AND RequestedFloor
+  CALL ActivateRequestFloorButtons WITH RequestedFloor
+  CALL AddToRequestFloorList with FloorRequest
+  IF ElevatorCurrentLevel IS SAME AS RequestedFloor
+    CALL De_ActivateRequestFloorButtons
+  END IF
+
+END SEQUENCE
+
+
+SEQUENCE ActivateRequestFloorButtons USING RequestedFloor
+   CALL SelectRequestFloorButton WITH RequestedFloor RETURNING RequestFloorButton
+   SET RequestFloorButton_Display to Illuminate USING RequestedFloor
+END SEQUENCE
+
+
+SEQUENCE DE_ActivateRequestFloorButtons USING RequestedFloor
+   CALL SelectRequestFloorButton WITH RequestedFloor RETURNING  RequestFloorButton
+   SET RequestFloorButton_Display to De_Illuminate USING RequestedFloor
+END SEQUENCE
+
+"*************************************************************"
+"                 -  SELECT AN ELEVATOR -                     "
+"**************************************************************"
+
+
+SEQUENCE SelectElevator USING CallButtons AND ElevatorCurrentLevel 
+
+
+
+
+SET FigureOfSuitabily TO 0                                  "(figure of suitability)"
+CALCULATE Distance EQUAL AS abs (ElevatorCurrentLevel - FloorLevel)  "(distance between elevator and kall)"
+SET NumberOfFloors TO 10
+SET selectedElevator = 1                                      "Default Elevator"
+READ CallButton Direction   
+SET KALL AS current CallButton                                  "(up or down)"
+FOR EACH Elevator in the Column DO
+    READ ElevatorStatus
+               
+    IF ElevatorStatus is idle THEN
+    CALCULATE FigureOfSuitabily AS NumberOfFloors - Distance
+
+    ELSE IF ElevatorStatus IS Moving & ElevatorDirection is GoingDown THEN
+
+        IF kall is above  THEN                                                              "(elevator_level < call_level )"
+            SET NewFigureOfSuitabily TO 0
+        ELSE IF Kall  above & Kall direction is same as elevator THEN                     "(elevor_level < call_level && KALL status == up)"
+            SET NewFigureOfSuitabily TO FigureOfSuitabily + 1
+        ELSE IF Kall IS bellow & Kall direction is NOT SAME AS Elevator THEN                 "(elevor_level > call_level && KALLstatus == down)"
+            SET NewFigureOfSuitabily TO FigureOfSuitabily
+        END IF
+
+    ELSE IF ElevatorStatus IS Moving & ElevatorDirection is GoingUp THEN
+        IF Kall is bellow THEN                                                              "(elevor_level > call_level )"
+            SET NewFigureOfSuitabily TO 0
+        ELSE IF Kall IS above & Kall direction is SAME AS Elevator THEN                     "(elevor_level > call_level && KALL status == up)"
+            SET newfigureOfSuitabily TO FigureOfSuitabily + 1
+        ELSE If Kall IS bellow & Kall direction IS NOT SAME AS Elevator THEN                     "(elevor_level < call_level && KALLstatus == down)"
+            SET NewFigureOfSuitabily  TO FigureOfSuitabily
+        END IF
+    END IF
+
+    IF NewFigureOfSuitabily > FigureOfSuitabily THEN 
+        SET selectedElevatorNumber TO Elevator
+        SET FigureOfSuitabily TO NewFigureOfSuitabily
+    END IF
+
+END FOR
+
+ CALL totalElapsedTime WITH Distance AND ElevatorList
+ 
+ RETURN selectedElevator
+
+END FOR
+
+END SEQUENCE 
+
+
+"*************************************************************"
+"                 -  Total Elapsed Time -                     "
+"**************************************************************"
+SEQUENCE totalElapsedTime Using Distance AND ElevatorList
+
+SET 𝑉 TO 0.7                            "𝑚/𝑠 (Elevator 𝑎𝑣𝑒𝑟𝑎𝑔𝑒 𝑠𝑝𝑒𝑒𝑑)"
+SET ℎ TO 3                              "𝑚 (𝐷𝑖𝑠𝑡𝑎𝑛𝑐𝑒 𝑏𝑒𝑡𝑤𝑒𝑒𝑛 𝑓𝑙𝑜𝑜𝑟𝑠)"
+SET 𝑡𝑖 TO 8.3                            "𝑠econds(𝐴𝑐𝑐𝑒𝑙𝑒𝑟𝑎𝑡𝑖𝑜𝑛−𝑑𝑒𝑐𝑒𝑙𝑒𝑟𝑎𝑡𝑖𝑜𝑛𝑡𝑖𝑚𝑒)"
+SET Distance TO currentNumberOfStoreys   "𝑁𝑢𝑚𝑏𝑒𝑟 𝑜𝑓 𝑠𝑡𝑜𝑟𝑒𝑦𝑠 𝑖𝑛 𝑡𝑤𝑜 𝑠𝑡𝑜𝑝𝑠"
+SET TO  0                               "𝑇𝑜𝑡𝑎𝑙 𝑟𝑜𝑎𝑑 𝑡𝑜 𝑡𝑎𝑘𝑒 𝑡𝑖𝑚𝑒"
+
+CASE d OF
+
+    1 : SET t TO 2 * h / V
+    2 : SET t TO 2 * ti + (2 * h - V * ti) / V                         " 2 Floors distance "
+    OTHERS : SET t TO (d - 2) * h / V + 2 * ti + (2 * h - V * ti) / V  " More Than 2 Floors distance"
+
+ENDCASE
+
+
+"The  equation  is  obtained  by  adding  the  opening  and closing  times  of  the  door, 
+ the  passenger  get-on  and  get-off times, and the traveling time."
+
+SET 𝑇otalElepsedTime TO 0       "𝑇𝑜𝑡𝑎𝑙𝑒𝑙𝑎𝑝𝑠𝑒𝑑𝑡𝑖𝑚𝑒"
+SET 𝑑𝑠 TO 0                     "𝑁𝑢𝑚𝑏𝑒𝑟 𝑜𝑓 𝑝𝑎𝑢𝑠𝑒𝑠"
+SET 𝑡𝑘 TO 4                     "seconds(𝐷𝑜𝑜𝑟𝑜𝑝𝑒𝑛𝑖𝑛𝑔−𝑐𝑙𝑜𝑠𝑖𝑛𝑔𝑡𝑖𝑚𝑒)"
+SET 𝑡𝑑 TO 10                    "seconds (𝑃𝑎𝑠𝑠𝑒𝑛𝑔𝑒𝑟 𝑟𝑖𝑑𝑒 𝑡𝑖𝑚𝑒)"
+
+SET 𝑇otalElepsedTime TO 𝑑𝑠 * (𝑡𝑘 + 𝑡𝑑) + 𝑡 
+RETURN 𝑇otalElepsedTime
+
+END SEQUENCE
+
+"*************************************************************"
+"                 -  Moving Elevators Control -               "
+"**************************************************************"
+SEQUENCE DisplayCurrentFloor USING ElevatorCurrentLevel
+
+    DISPLAY ElevatorCurrentLevel IN floorLevel_display
+    DISPLAY ElevatorCurrentLevel IN ElevatorFloor_display
+
+END SEQUENCE
+
+SEQUENCE MovingUp USING ElevatorCurrentLevel AND floorLevel
+
+   FOR EACH Elevator in Elevators
+       IF floorLevel < ElevatorCurrentLevel THEN
+           REPEAT
+           INCREMENT ElevatorCurrentLevel BY 1
+           SET ELevatorDirection TO GoingUp
+           CALL DisplayCurrentFloor
+           UNTIL floorLevel = ElevatorCurrentLevel
+       END IF
+   END FOR
+
+END SEQUENCE
+
+SEQUENCE MovingDown USING ElevatorCurrentLevel AND floorLevel
+   FOR EACH Elevator in Elevators
+       IF floorLevel > ElevatorCurrentLevel THEN
+           REPEAT
+           DECREMENT ElevatorCurrentLevel BY 1
+           SET ElevatorDirection TO GoingDown
+           CALL DisplayCurrentFloor
+           UNTIL floorLevel = ElevatorCurrentLevel
+       END IF
+   END FOR
+END SEQUENCE
+
+"*************************************************************"
+"                 -  Elevators Travel List -                   "
+"*************************************************************"
+
+SEQUENCE SortElevLevelsList USING ElevFloorsList AND ElevatorDirection
+
+    IF Elevator Direction IS GOING UP THEN
+      SORT ElevFloorsList FROM Lower Levels TO Upper levels
+    ELSE IF Elevator Direction IS GOING DOWN THEN
+      SORT ElevFloorsList FROM Upper Levels TO Lower levels
+    END IF
+    SET ElevFloorsList TO SortedList
+  return  SortedList
+
+END SEQUENCE
+
+SEQUENCE AddToRequestFloorList USING FloorRequest AND Elevator
+
+  ADD FloorRequest TO ElevFloorsList THEN
+  CALL SortElevLevelsList WITH  ElevFloorsList
+  
+END SEQUENCE
+
+"*************************************************************"
+"                 -  ElEVATOR OPERATION -                      "
+"*************************************************************"
+
+
+   
+WHILE ELEVATOR SYSTEM OPERATING
+
+        WHILE SortedList IS NOT NULL 
+            
+                CASE
+                RequistedLEvel IS ElevatorCurrentLevel : CALL OpenDoors WITH Elevator
+                RequistedLevel IS ABOVE ElevatorCurrentLevel : CALL MovingUp WITH Elevator AND RequistedLevel
+                RequistedLevel IS BELLOW ElevatorCurrentLevel : CALL MovingDown WITH Elevator AND RequistedLevel
+                ENDCASE
+
+        END WHILE
+        Call DefaultIdlePosition
+
+ENDWHILE
+
+
+
+
