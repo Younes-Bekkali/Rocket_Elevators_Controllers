@@ -1,6 +1,6 @@
 import time
 
-
+# Initiate the system and creating new columns
 class columnController:
     def __init__(self, nbFloors, nbElevators):
         self.nbFloors = nbFloors
@@ -8,7 +8,7 @@ class columnController:
         self.column = Column(nbFloors, nbElevators)
        
 
-
+# Call an elevator 
     def RequestElevator(self, floor, direction):
         time.sleep(1)
         print("")
@@ -20,7 +20,7 @@ class columnController:
         elevator = self.selectElevator(floor, direction)
         elevator.addToList(floor)
         return elevator
-
+# Request an a floor
     def RequestFloor(self, elevator, RequestedFloor):
         time.sleep(1)
         print("")
@@ -31,25 +31,25 @@ class columnController:
         time.sleep(1)
         elevator.addToList(RequestedFloor)
 
-
+# Select the suitable elevator dependind on the direction, the status and level of the elevator
     def selectElevator(self, floor, direction):
-        bestElevator = None
-        shortest_distance = 1000
+        suitableElevator = None
+        shortestDistance = 1000
         for elevator in (self.column.elevatorsColumn):
             if (floor == elevator.elevatorCurrentFloor and (elevator.elevatorStatus == "Stopped" or elevator.elevatorStatus == "Idle" or elevator.elevatorStatus == "Moving")):
                 return elevator
             else:
-                ref_distance = abs(floor - elevator.elevatorCurrentFloor)
-                if shortest_distance > ref_distance:
-                    shortest_distance = ref_distance
-                    bestElevator = elevator
+                distance = abs(floor - elevator.elevatorCurrentFloor)
+                if shortestDistance > distance:
+                    shortestDistance = distance
+                    suitableElevator = elevator
 
                 elif elevator.direction == direction:
-                    bestElevator = elevator
+                    suitableElevator = elevator
 
-        return bestElevator
+        return suitableElevator
 
-
+# Column's class allows to add more elevators
 class Column:
     def __init__(self, nbFloors, nbElevators):
         self.nbFloors = nbFloors
@@ -58,36 +58,36 @@ class Column:
         for i in range(nbElevators):
             elevator = Elevator(i+1, "Idle", 1, "Up")
             self.elevatorsColumn.append(elevator)
-            
+# Elevator's class creats the elevators and operate them            
 class Elevator:
     def __init__(self, elevatorId, elevatorStatus, elevatorCurrentFloor, elevatorDirection):
         self.elevatorId = elevatorId
         self.elevatorStatus = elevatorStatus
         self.elevatorCurrentFloor = elevatorCurrentFloor
         self.elevatorDirection = elevatorDirection
-        self.floor_list = []
-
+        self.elevatorsFloorsList = []
+# sort and add the level requested to the list of requestes
     def addToList(self, RequestedFloor):
-        self.floor_list.append(RequestedFloor)
+        self.elevatorsFloorsList.append(RequestedFloor)
         self.sort()
-        self.operate_elevator(RequestedFloor)
+        self.moveElevator(RequestedFloor)
 
 
     def sort(self):
         if self.elevatorDirection == "Up":
-            self.floor_list.sort()
+            self.elevatorsFloorsList.sort()
         elif self.elevatorDirection == "Down":
-            self.floor_list.sort()
-            self.floor_list.reverse()
-        return self.floor_list
+            self.elevatorsFloorsList.sort()
+            self.elevatorsFloorsList.reverse()
+        return self.elevatorsFloorsList
 
-
-    def operate_elevator(self, RequestedFloor):
-        while (len(self.floor_list) > 0):
+# Moving the elevator to the level destination
+    def moveElevator(self, RequestedFloor):
+        while (len(self.elevatorsFloorsList) > 0):
             if ((RequestedFloor == self.elevatorCurrentFloor)):
                 self.openDoors()
                 self.elevatorStatus = "Moving"
-                self.floor_list.pop()
+                self.elevatorsFloorsList.pop()
             elif (RequestedFloor < self.elevatorCurrentFloor):
 
                 self.elevatorStatus = "Moving"
@@ -101,7 +101,7 @@ class Elevator:
                 print("Elevator number ", self.elevatorId,"is ", self.elevatorStatus)
                 print("")
                 self.openDoors()
-                self.floor_list.pop()
+                self.elevatorsFloorsList.pop()
                 
             elif (RequestedFloor > self.elevatorCurrentFloor):
 
@@ -119,12 +119,12 @@ class Elevator:
 
                 self.openDoors()
 
-                self.floor_list.pop()
+                self.elevatorsFloorsList.pop()
 
-        if self.floor_list == 0:
+        if self.elevatorsFloorsList == 0:
             self.elevatorStatus = "Idle"
 
-
+# Doors Manipulation
 
     def openDoors(self):
         time.sleep(1)
@@ -134,16 +134,16 @@ class Elevator:
         time.sleep(1)
         print("")
         time.sleep(1)
-        self.Close_door()
+        self.closeDoor()
 
-    def Close_door(self):
-        print("Close door")
-        print("Doors not obstructed")
+    def closeDoor(self):
+        print("Closing Doors")
+        print("Doors not obstructed : OK")
         print("Elevator's capacity check: OK ")
         print("Doors Closed")
         time.sleep(1)
 
-
+# Moving the elevator depending on the equested direction
 
     def moveUp(self, RequestedFloor):
         print("Floor : ", self.elevatorCurrentFloor)
@@ -167,8 +167,7 @@ class Call_button:
     def __init__(self, floor, direction):
         self.floor = floor
         self.direction = direction
-        self.light = False
-
+      
 
 class Floor_button:
     def __init__(self, RequestedFloor):
@@ -178,7 +177,7 @@ class Floor_button:
 "*************************************************************"
 "                 -  TEST SCENARIOS -                         "
 "*************************************************************"
-
+# Testing on different scenario
 
 # Scenario 1 
 
@@ -188,20 +187,20 @@ elevatorNumOne = controllerOne.column.elevatorsColumn[0]
 elevatorNumTwo = controllerOne.column.elevatorsColumn[1]
 
 elevatorNumOne.elevatorCurrentFloor = 2
-elevatorNumOne.elevatorStatus = "Moving"
-elevatorNumOne.elevatorDirection = "Down"
+elevatorNumOne.elevatorStatus = "Idle"
+elevatorNumOne.elevatorDirection = "Up"
 
 elevatorNumTwo.elevatorCurrentFloor = 6
-elevatorNumTwo.elevatorStatus = "Moving"
+elevatorNumTwo.elevatorStatus = "Idle"
 elevatorNumTwo.elevatorDirection = "Down"
 
 print("")
 print("---Test scenario 1 starts---")
 print("")
-elevator = controllerOne.RequestElevator(5, "Up")
+elevator = controllerOne.RequestElevator( 5, "Up")
 controllerOne.RequestFloor(elevator, 7)
 print("")
-print("---The end of the test scenario 1---")
+print("End test scenario 1 : OK++---")
 print("")
 
 
@@ -213,10 +212,10 @@ elevatorNumOne = controllerTwo.column.elevatorsColumn[0]
 elevatorNumTwo = controllerTwo.column.elevatorsColumn[1]
 
 elevatorNumOne.elevatorCurrentFloor = 10
-elevatorNumOne.elevatorStatus = "Moving"
+elevatorNumOne.elevatorStatus = "Idle"
 elevatorNumOne.elevatorDirection = "Down"
 elevatorNumTwo.elevatorCurrentFloor = 3
-elevatorNumTwo.elevatorStatus = "Moving"
+elevatorNumTwo.elevatorStatus = "Idle"
 elevatorNumTwo.elevatorDirection = "Down"
 
 print("")
@@ -231,7 +230,7 @@ controllerTwo.RequestFloor(elevator, 5)
 elevator = controllerTwo.RequestElevator(9, "Down")
 controllerTwo.RequestFloor(elevator, 2)
 print("")
-print("The end of the test scenario 2 ")
+print("End test scenario 2 : OK++ ")
 print("")
 
 
@@ -245,7 +244,7 @@ elevatorNumOne = controllerThree.column.elevatorsColumn[0]
 elevatorNumTwo = controllerThree.column.elevatorsColumn[1]
 
 elevatorNumOne.elevatorCurrentFloor = 10
-elevatorNumOne.elevatorStatus = "Moving"
+elevatorNumOne.elevatorStatus = "Idle"
 elevatorNumOne.elevatorDirection = "Down"
 
 elevatorNumTwo.elevatorCurrentFloor = 3
@@ -267,5 +266,5 @@ elevator = controllerThree.RequestElevator(3, "Down")
 controllerThree.RequestFloor(elevator, 2)
 
 print("")
-print("The end of the test scenario 3")
+print("End test scenario 3 : OK++")
 print("")

@@ -1,6 +1,6 @@
-"*************************************************************"
-"                 -  TEST SCENARIOS -                         "
-"*************************************************************"
+//"*************************************************************"
+//"                 -  TEST SCENARIOS -                         "
+//"*************************************************************"
 
 function testBattery() {
 
@@ -37,7 +37,7 @@ function testBattery() {
     // elevatorOne.elevatorDirection = "Up";
 
     // elevatorTwo.currentPosition = 3;                     //  elevator 2 idle at floor 3,
-    // elevatorTwo.state = "Udle";
+    // elevatorTwo.state = "Idle";
     // elevatorTwo.elevatorDirection = "Up";
 
     // var elevator = testScenario.RequestElevator(1, "Up");        // someone is on the 1st floor 
@@ -67,9 +67,9 @@ function testBattery() {
     // someone is on the 1st floor 
     var elevator = testScenario.RequestElevator(3, "Down"); //and requests the 6th floor = elevator 2 should be sent = ok
 
-    testScenario.RequestFloor(elevator, 2); //on floor 9
-    elevator = testScenario.RequestElevator(9, "Down"); // and wants to go down to the 2nd floor= Elevator 1 should be sent.=ok
-    testScenario.RequestFloor(elevator, 3);
+    testScenario.RequestFloor(elevator, 2);             //on floor 9
+    elevator = testScenario.RequestElevator(10, "Down"); // and wants to go down to the 2nd floor= Elevator 1 should be sent.=ok
+    testScenario.RequestFloor(elevator, 3);                // someone else is on the 10th floor and wants to go down  to the 3rd 
 
 
     console.log("");
