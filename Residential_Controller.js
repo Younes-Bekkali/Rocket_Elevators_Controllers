@@ -1,13 +1,14 @@
 "*************************************************************"
 "                 -  TEST SCENARIOS -                         "
 "*************************************************************"
+
 function testBattery() {
 
     var testScenario = initSystem(10, 2);
     var elevatorOne = testScenario.column.elevatorsCulumn[0];
     var elevatorTwo = testScenario.column.elevatorsCulumn[1];
-     
-    
+
+
     //Scenario 1 
 
     // elevatorOne.currentPosition = 2;                            // elevator 1 Idle at floor 2
@@ -41,33 +42,33 @@ function testBattery() {
 
     // var elevator = testScenario.RequestElevator(1, "Up");        // someone is on the 1st floor 
     // testScenario.RequestFloor(elevator, 6);                      //and requests the 6th floor = elevator 2 should be sent = ok
-    
+
     // elevator = testScenario.RequestElevator(3, "Up");            // someone else is on the 3rd floor 
     // testScenario.RequestFloor(elevator, 5);                      // and requests the 5th floor.Elevator 2 should be sent.
-    
+
     // elevator = testScenario.RequestElevator(9, "Down");             //on floor 9
     // testScenario.RequestFloor(elevator, 2);                       // and wants to go down to the 2nd floor= Elevator 1 should be sent.
-    
+
     // console.log("");
     // console.log("---Test scenario 2 : Ok++");
     // console.log("");
     // console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
-   //Scenario 3 
+    //Scenario 3 
 
-    elevatorOne.currentPosition = 10;                        //elevator 1 idle at floor 10 
-    elevatorOne.state = "Idle"; 
+    elevatorOne.currentPosition = 10; //elevator 1 idle at floor 10 
+    elevatorOne.state = "Idle";
     elevatorOne.elevatorDirection = "Down";
-    
-    elevatorTwo.currentPosition = 3;                          //elevator 2 moving from floor 3 to floor 6
-    elevatorTwo.state = "Moving";                             // and wants to go down to the 3rd floor. Elevator 2 should be sent => Ok
+
+    elevatorTwo.currentPosition = 3; //elevator 2 moving from floor 3 to floor 6
+    elevatorTwo.state = "Moving"; // and wants to go down to the 3rd floor. Elevator 2 should be sent => Ok
     elevatorTwo.elevatorDirection = "Up";
 
-                                                                  // someone is on the 1st floor 
-    var elevator = testScenario.RequestElevator(3, "Down");      //and requests the 6th floor = elevator 2 should be sent = ok
+    // someone is on the 1st floor 
+    var elevator = testScenario.RequestElevator(3, "Down"); //and requests the 6th floor = elevator 2 should be sent = ok
 
-    testScenario.RequestFloor(elevator, 2);                       //on floor 9
-    elevator = testScenario.RequestElevator(9, "Down");        // and wants to go down to the 2nd floor= Elevator 1 should be sent.=ok
+    testScenario.RequestFloor(elevator, 2); //on floor 9
+    elevator = testScenario.RequestElevator(9, "Down"); // and wants to go down to the 2nd floor= Elevator 1 should be sent.=ok
     testScenario.RequestFloor(elevator, 3);
 
 
@@ -75,7 +76,7 @@ function testBattery() {
     console.log("---Test scenario 3 : Ok++")
     console.log("");
     console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    
+
 }
 
 //*************************************************************"
@@ -96,7 +97,7 @@ class Column {
 
         for (let i = 0; i < this.nbElevators; i++) {
 
-            let elevator = new Elevator(i+1, "Idle", 1, "Up");
+            let elevator = new Elevator(i + 1, "Idle", 1, "Up");
             this.elevatorsCulumn.push(elevator);
         }
     }
@@ -111,15 +112,17 @@ class Elevator {
         this.currentPosition = currentPosition;
         this.elevatorDirection = elevatorDirection;
         this.elevatorFloorsList = [];
+
     }
 
-// "*************************************************************"
-// "                 -  ELEVATORS STOPS LIST -                  "
-// "*************************************************************"
+    // "*************************************************************"
+    // "                 -  ELEVATORS STOPS LIST -                  "
+    // "*************************************************************"
 
     // Add the request to the elevators list
 
     addToList(RequestedFloor) {
+
         this.elevatorFloorsList.push(RequestedFloor);
         this.sortList();
         this.operate_elevator(RequestedFloor);
@@ -140,7 +143,7 @@ class Elevator {
     // Move the elvators to their destination
 
     operate_elevator(RequestedFloor) {
-        while (this.elevatorFloorsList > 0) { 
+        while (this.elevatorFloorsList > 0) {
             if (RequestedFloor === this.currentPosition) {
                 this.openDoors();
                 this.state = "Moving";
@@ -148,7 +151,7 @@ class Elevator {
                 this.elevatorFloorsList.shift();
             } else if (RequestedFloor < this.currentPosition) {
                 this.state = "Moving";
-                console.log("Elevator "+ this.elevatorId + " is selected");
+                console.log("Elevator " + this.elevatorId + " is selected");
                 console.log("Elevator " + this.elevatorId, this.state);
                 console.log("");
                 this.Direction = "Down";
@@ -163,7 +166,7 @@ class Elevator {
                 delay(1000);
                 this.state = "Moving";
                 console.log("");
-                console.log("Elevator "+ this.elevatorId + " is selected");
+                console.log("Elevator " + this.elevatorId + " is selected");
                 console.log("Elevator " + this.elevatorId, this.state);
                 console.log("");
                 this.Direction = "Up";
@@ -183,27 +186,28 @@ class Elevator {
         }
     }
 
-// "*************************************************************"
-// "               -  Floor Request & Call Buttons Control -     "
-// "*************************************************************"
+    // "*************************************************************"
+    // "               -  Floor Request & Call Buttons Control -     "
+    // "*************************************************************"
     Request_floor_button(RequestedFloor) {
 
         this.RequestedFloor = RequestedFloor;
         this.floorLights = floorLights;
     }
     Call_floor_button(floor, Direction) {
-        
+
         this.floor = floor;
         this.Direction = Direction;
     }
 
-// "*************************************************************"
-// "                 -  ELEVATORS DOORS CONTROL -                "
-// "**************************************************************"
-    
+    // "*************************************************************"
+    // "                 -  ELEVATORS DOORS CONTROL -                "
+    // "**************************************************************"
+
     openDoors() {
         delay(1000);
         console.log("Doors opening");
+        console.log("Doors opened");
         console.log("");
         console.log("Button light-off");
         delay(1000);
@@ -220,9 +224,9 @@ class Elevator {
         delay(1000);
     }
 
-// "*************************************************************"
-// "                 -  ElEVATORS MOVEMENTS -                      "
-// "*************************************************************"
+    // "*************************************************************"
+    // "                 -  ElEVATORS MOVEMENTS -                      "
+    // "*************************************************************"
 
     moveUp(RequestedFloor) {
         console.log("Floor : " + this.currentPosition);
@@ -255,7 +259,7 @@ class ElevatorController {
         this.nbFloors = nbFloors;
         this.nbElevators = nbElevators;
         this.column = new Column(nbFloors, nbElevators);
-       
+
 
         console.log("System is starting");
     }
@@ -275,27 +279,27 @@ class ElevatorController {
         elevator.addToList(floor);
         return elevator;
     }
-    
+
     // Call an elevator 
 
     RequestFloor(elevator, RequestedFloor) {
         delay(1000);
         console.log("");
-        console.log("The floor number " + RequestedFloor +" is requested");
+        console.log("The floor number " + RequestedFloor + " is requested");
         delay(1000);
         console.log("");
         console.log("Request button illuminated");
         delay(1000);
         elevator.addToList(RequestedFloor);
-        
+
     }
 
-// "*************************************************************"
-// "                 -  SELECT AN ELEVATOR -                 "
-// "**************************************************************"
+    // "*************************************************************"
+    // "                 -  SELECT AN ELEVATOR -                 "
+    // "**************************************************************"
 
     selectElevator(floor, Direction) {
-      
+
         let suitableElevator = null;
         let shortestDistance = 1000;
         for (let i = 0; i < this.column.elevatorsCulumn.length; i++) {
