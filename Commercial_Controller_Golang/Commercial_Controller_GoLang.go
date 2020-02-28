@@ -8,6 +8,82 @@ import (
 	"time"
 )
 
+// Elevator struct
+type Elevator struct {
+	elevatorID     	   int
+	ElevCurrentFloor  int
+	elevFloorsList      []int
+	//elevator_status    string
+	elevDirection 		string
+	doorsSensor       	 bool
+	weightCapacitySensor       bool
+	//column             Column
+}
+// ElevatorConstructor exported fonction 
+func ElevatorConstructor() *Elevator {
+	elevator := new(Elevator)
+	elevator.ElevCurrentFloor = 1
+	elevator.elevFloorsList = []int{}
+	//elevator.elevator_status = "idle"
+	elevator.elevDirection= "up"
+	elevator.doorsSensor = true
+	elevator.weightCapacitySensor = true
+	return elevator
+}
+
+// Column struct
+type Column struct {
+	columnID            int
+	elevatorsColumn 	int
+	elevatorsList       []Elevator
+}
+// ColumnConstructor 
+func ColumnConstructor(elevatorsColumn int) *Column {
+	column := new(Column)
+	column.elevatorsColumn = 5
+	for index	 := 0; index < column.elevatorsColumn; index++ {
+		elevator := ElevatorConstructor()
+		column.elevatorsList = append(column.elevatorsList, *elevator)
+	}
+	return column
+}
+
+// Battery struct
+type Battery struct {
+	columnNb 		int
+	columnsList 	[]Column
+}
+
+// BatteryConstructor
+func BatteryConstructor(columnNb int) *Battery {
+	battery := new(Battery)
+	battery.columnNb = 4
+	for index := 0; index < battery.columnNb; index++ {
+		column := ColumnConstructor(index)
+		battery.columnsList = append(battery.columnsList, *column)
+	}
+	return battery
+}
+// BatteryController hold
+type BatteryController struct {
+	battriesNb int
+	batteries       []Battery
+	floorNb   		int
+	user_direction  string
+}
+// ControllerConst 
+
+func ControllerConst(battriesNb int) BatteryController {
+	controller := new(BatteryController)
+	controller.battriesNb = 1
+	for index := 0; index < battriesNb; index++ {
+		battery := BatteryConstructor(index)
+		controller.batteries = append(controller.batteries, *battery)
+	}
+	return *controller
+}
+
+
 // public class Elevator
 // public int elevatorId;
 // public string status;
@@ -131,9 +207,6 @@ import (
 
 //         // close automatically the doors after a delay
 //             this.closeDoors()
-
-          
-           
 //         }
 
 
@@ -148,33 +221,33 @@ Affiche des informations sur un personnage
 
 @return: void
 */
-func (p Personnage) Affichage() { // déclaration de ma méthode Affichage() liée à ma structure Personnage
-    fmt.Println("--------------------------------------------------")
-    fmt.Println("Vie du personnage", p.Nom, ":", p.Vie)
-    fmt.Println("Puissance du personnage", p.Nom, ":", p.Puissance)
+// func (p Personnage) Affichage() { // déclaration de ma méthode Affichage() liée à ma structure Personnage
+//     fmt.Println("--------------------------------------------------")
+//     fmt.Println("Vie du personnage", p.Nom, ":", p.Vie)
+//     fmt.Println("Puissance du personnage", p.Nom, ":", p.Puissance)
 
-    if p.Mort {
-        fmt.Println("Vie du personnage", p.Nom, "est mort")
-    } else {
-        fmt.Println("Vie du personnage", p.Nom, "est vivant")
-    }
+//     if p.Mort {
+//         fmt.Println("Vie du personnage", p.Nom, "est mort")
+//     } else {
+//         fmt.Println("Vie du personnage", p.Nom, "est vivant")
+//     }
 
-    fmt.Println("\nLe personnage", p.Nom, "possède dans son inventaire :", p.Vie)
+//     fmt.Println("\nLe personnage", p.Nom, "possède dans son inventaire :", p.Vie)
 
-    for _, item := range p.Inventaire {
-        fmt.Println("-", item)
-    }
-}
+//     for _, item := range p.Inventaire {
+//         fmt.Println("-", item)
+//     }
+// }
 
-func main() {
+// func main() {
 
-	magicien := Personnage{ // Instanciation de la classe Personnage
-		Nom:        "magix",
-		Vie:        100,
-		Puissance:  20,
-		Mort:       false,
-		Inventaire: [3]string{"potions", "poisons", "bâton"},
-	}
+// 	magicien := Personnage{ // Instanciation de la classe Personnage
+// 		Nom:        "magix",
+// 		Vie:        100,
+// 		Puissance:  20,
+// 		Mort:       false,
+// 		Inventaire: [3]string{"potions", "poisons", "bâton"},
+// 	}
 
-	magicien.Affichage()
-}
+// 	magicien.Affichage()
+// }
