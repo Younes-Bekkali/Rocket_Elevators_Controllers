@@ -653,7 +653,6 @@ namespace Commercial_controller
                     ColumnTwo.elevatorsList[3].ElevCurrentFloor = 15;
                     ColumnTwo.elevatorsList[3].elevDirection = "Down";
                     ColumnTwo.elevatorsList[3].status = "Moving";
-                    ColumnTwo.elevatorsList[3].elevFloorsList.Add(22);
                     ColumnTwo.elevatorsList[3].elevFloorsList.Add(2);
 
                     //Elevator # 5
