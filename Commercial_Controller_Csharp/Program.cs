@@ -593,7 +593,13 @@ namespace Commercial_controller
             //
            
             while (true)
-            {
+            { 
+                Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                Console.WriteLine("");
+                Console.WriteLine("             ---Senarios Testing--- ");
+                Console.WriteLine("");
+                Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                 Console.WriteLine("");
                 Console.WriteLine("Want you test a scenario? y/n (yes/No)");
                 string continueTesting = Console.ReadLine();
                  while (continueTesting != "y" && continueTesting != "n")
@@ -608,6 +614,7 @@ namespace Commercial_controller
                     Console.WriteLine("Thank you!");
                     break;
                 }
+                 Console.WriteLine("");
                 Console.WriteLine("Please choose a scenario: 1, 2, 3 or 4");
                 string scenario = Console.ReadLine();
                 while (scenario != "1" && scenario != "2" && scenario != "3" && scenario != "4")
@@ -618,6 +625,11 @@ namespace Commercial_controller
                 //--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 if (scenario == "1")
                 {
+                    Console.WriteLine("");
+                    Console.WriteLine("---Testing scenario 1 ");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
 
                     // // Scenario 1:
                     // // With second column (or column B) serving floors from 2 to 20, 
@@ -669,11 +681,21 @@ namespace Commercial_controller
                     //Request:  
                     controller.AssignElevator_ToFloors(20);
 
+                    Console.WriteLine("");
+                    Console.WriteLine("---Test scenario 1 : Ok++");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
 
                     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 }
                 else if (scenario == "2")
                 {
+                    Console.WriteLine("");
+                    Console.WriteLine("---Testing scenario 2 ");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
                     // // Scenario # 2:
                     // //With third column (or column C) serving floors from 21 to 40,
                     // // with elevator C1 at 1st floor going to 21th, C2 at 23st floor going to 28th,
@@ -722,10 +744,22 @@ namespace Commercial_controller
                     // Request
                     controller.AssignElevator_ToFloors(36);
 
+                     Console.WriteLine("");
+                    Console.WriteLine("---Test scenario 2 : Ok++");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+
+
                     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 }
                 else if (scenario == "3")
                 {
+                    Console.WriteLine("");
+                    Console.WriteLine("---Testing scenario 3 ");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
 
                     // //Scénario 3:
 
@@ -778,10 +812,22 @@ namespace Commercial_controller
                     //Request
                     Elevator elevator = controller.RequestElevator_ToGround(54, 1);
 
+                     Console.WriteLine("");
+                    Console.WriteLine("---Test scenario 3 : Ok++");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+
+
                     //--------------------------------------------------------------------------------------------------
                 }
                 else if (scenario == "4")
                 {
+                    Console.WriteLine("");
+                    Console.WriteLine("---Testing scenario 4 ");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
                     // Scenario 4:
                     // With first column (or Column A) serving the basements B1 to B6,
                     // with elevator A1 idle at B4, A2 idle at 1st floor, A3 at B3 and going to B5, 
@@ -834,6 +880,13 @@ namespace Commercial_controller
                     Elevator elevator = controller.RequestElevator_upToGround(-3, 0);
 
                     //controller.AssignElevator_ToBasements(1);
+
+                     Console.WriteLine("");
+                    Console.WriteLine("---Test scenario 1 : Ending");
+                    Console.WriteLine("");
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+
                 }
             }
         }
