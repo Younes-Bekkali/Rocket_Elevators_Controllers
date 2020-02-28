@@ -447,9 +447,7 @@ namespace Commercial_controller
             this.floorNb = floorNb;
             this.columnNb = columnNb;
             this.elevatorsColumn = elevatorsColumn;
-
             this.battery = new Battery(this.columnNb);
-
         }
         // Call an elevator from the first floor to go to any level
         public Elevator AssignElevator_ToFloors(int RequestedFloor)
