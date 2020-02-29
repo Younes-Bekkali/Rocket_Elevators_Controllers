@@ -6,7 +6,9 @@ The test is four different scenarios for different columns, directions, and floo
 
 To test the C# using the VS code terminal, after launching the code using "dotnet run", you'll be asked to answer the number of a scenario from 1 to 4 for the four different scenarios 1 to 4. after each scenario you'll be asked  if you want to proceed to another scenario or not (y/n).
 
-To test the Golang code using the VS code: " go run Commercial_Controller_GoLang.go" on the terminal.
+To test the Golang code using the VS code: " go run Commercial_Controller_GoLang.go" on the terminal. Nothing to simulate yet, almost done but still needs a final touch. 
+
+For Java I used Eclipse, I took advantage of its similiraties with C# , the code almost done , but also not tried yet.
 
 
 WEEK#2: The residential controller codes using Javascript and Python codes
