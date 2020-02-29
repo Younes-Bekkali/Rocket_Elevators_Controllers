@@ -1,6 +1,6 @@
 # Rocket_Elevators_Controllers
 
-WEEK#3: The commercial controller codes using C sharp and GoLang codes
+WEEK#3: The commercial controller codes using C sharp, GoLang and Java codes
 
 The test is four different scenarios for different columns, directions, and floors.
 
