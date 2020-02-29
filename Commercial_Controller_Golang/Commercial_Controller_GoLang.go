@@ -1,3 +1,10 @@
+// //
+// WEEK 3: Commercial Controller
+// CODE USED: GOLANG
+// IT IS A CODE FOR AN ELEVATOR CONTROLLER FOR COMMERCIAL BUILDING
+// //
+
+
 package main
 
 import (
