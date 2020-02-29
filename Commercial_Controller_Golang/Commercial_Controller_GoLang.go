@@ -96,8 +96,6 @@ func BatteryConstr(columnNb int) *Battery {
 	return battery
 }
 
-
-
 // BatteryController is the struct for controller
 type BatteryController struct {
 	battryNb 		int
@@ -120,7 +118,7 @@ func ControllerConstr(battryNb int) BatteryController {
 	return *controller
 }
 
-//  // Select an elevator from any level to go to the first floor (ground)
+// Select an elevator from any level to go to the first floor (ground)
 func (controller *BatteryController) RequestElevator(FloorNumber int, RequestedFloor int) Elevator {
 	fmt.Println("Request elevator to floor : ", FloorNumber)
 	time.Sleep(1200 * time.Millisecond)
@@ -197,7 +195,6 @@ func (e *Elevator) addToList(RequestedFloor int) {
 		// Sort the list from last to first. compare every element to each other 
 		sort.Ints(e.elevFloorsList)
 	} else if RequestedFloor < e.ElevCurrentFloor{
-
 		sort.Sort(sort.Reverse(sort.IntSlice(e.elevFloorsList)))
 	}
 	// Call the move elevator to its destination once the request added and the list sorted
@@ -306,7 +303,7 @@ func (e *Elevator) moveDown(RequestedFloor int) {
 		fmt.Println("Column # ", e.column.columnID, " || Elevator # ", e.elevatorID ," ||  Floor # ", e.ElevCurrentFloor)
 	}
 }
-   //Méthode 1: RequestElevator_ToGround(FloorNumber, RequestedFloor)
+    //Méthode 1: RequestElevator_ToGround(FloorNumber, RequestedFloor)
     //Méthode 2: AssignElevator_ToFloors(RequestedFloor)
     //FloorNumber = the place where the customer is at
 	//RequestedFloor = the floor the customer want to go
