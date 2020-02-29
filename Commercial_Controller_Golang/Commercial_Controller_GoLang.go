@@ -166,7 +166,7 @@ func (b Battery) selectColumn(RequestedFloor int) Column { // not sure about *
 		return b.columnsList[2]
 	} else if RequestedFloor >= 41 && RequestedFloor <= 60 || (RequestedFloor == 1 ){
 		// the floors from 41 to 60 and the 1 floor are assigned to the column # 4
-		return b.columnsList[3]
+		return b.columnsList[2] // for testing , erreur
 	}
 	return b.columnsList[3] // not workin yet
 }
