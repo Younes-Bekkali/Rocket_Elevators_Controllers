@@ -161,6 +161,7 @@ namespace Commercial_controller
         }
         public void closeDoors()
         {
+            //Check if the the doors are not obstructed and the weight capacity is ok
             if (doorsSensor || weightCapacitySensor)
             {
                 Console.WriteLine("Doors: Closing");
@@ -168,7 +169,6 @@ namespace Commercial_controller
                 Console.WriteLine("Doors: Not obstructed");
                 Console.WriteLine("Doors: Closed");
                 Thread.Sleep(700);
-
 
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
             }
@@ -205,7 +205,7 @@ namespace Commercial_controller
             {
                 this.ElevCurrentFloor += 1;
                 Console.WriteLine("Column # " + columnId + " || Elevator # " + elevatorId + " ||  Floor # " + this.ElevCurrentFloor);
-                Thread.Sleep(300);
+                Thread.Sleep(700);
             }
         }
 
@@ -220,7 +220,7 @@ namespace Commercial_controller
             {
                 this.ElevCurrentFloor -= 1;
                 Console.WriteLine("Column # " + columnId + " || Elevator # " + elevatorId + " ||  Floor # " + this.ElevCurrentFloor);
-                Thread.Sleep(300);
+                Thread.Sleep(700);
             }
             Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
         }
@@ -251,12 +251,12 @@ namespace Commercial_controller
         }
 
 
-        // Select an elevator to get to any floor 
+        // Select an elevator to get to the floors 
         public Elevator getToFloorsElevators(int FloorNumber)
         {
             foreach (var elevator in elevatorsList)
             {
-                // Return first the elevators that are on idle status in the column
+                // Select first the elevator if it is on "Idle"
                 if (elevator.status == "Idle" || elevator.status == "Stopped")
                 {
                     return elevator;
@@ -294,7 +294,6 @@ namespace Commercial_controller
         {
             int shortDistance = 5555;
             int suitableElevator = 0;
-            //int callDirection = elevatorsList[elevId].ElevCurrentFloor - RequestedFloor;
 
             for (int elevId = 0; elevId < this.elevatorsList.Count; elevId++)
             {
@@ -482,9 +481,9 @@ namespace Commercial_controller
             Column column = battery.selectColumn(RequestedFloor);
             // The call is from the first floor going up 
             // Select the suitable elevator
-            Elevator elevator = column.getToBasementsElevator(7);
+            Elevator elevator = column.getToBasementsElevator(-3);
             // Add the destination to elevator's list
-            elevator.addToList(7, column.columnId);
+            elevator.addToList(-3, column.columnId);
             elevator.addToList(RequestedFloor, column.columnId);
 
             // Return the selecated elevator
